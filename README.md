@@ -1,10 +1,9 @@
 SQM-Library
 ===========
 
-Quick Doc:
-===========
+## Quick Doc:
 class SQMBasicController executes SQM Algorithm and exports results
-
+```cpp
 	void loadSkeletonFromFile(string fileName); - loads a skeleton class from file
 	void loadSkeleton(SkeletonNode *skeleton); - loads a skeleton class
 	void exportMeshToFile(string fileName); - exports mesh as a .obj file
@@ -18,11 +17,12 @@ class SQMBasicController executes SQM Algorithm and exports results
 	void joinBNPs(); - joins BNPs
 	void executeSQMAlgorithm(); - executes SQM algorithm to the end
 	void executeSQMAlgorithm(SQMState state); - executes SQM algorithm up to a specified state
-  
-Common Ussage:
-===========
+```
+##Common Ussage:
+```cpp
 	SQMBasicController *sqm = new SQMBasicController();
 	sqm->loadSkeletonFromFile(fileName); or sqm->loadSkeleton(skeleton);
 	sqm->executeSQMAlgorithm();
 	sqm->exportMeshToTriangles(points, indices); or sqm->exportMeshToFile(saveToFileName);
 	delete sqm;
+```
