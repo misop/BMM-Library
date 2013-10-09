@@ -46,6 +46,15 @@ void SQMBasicController::loadSkeletonFromFile(string fileName) {
 	delete node;
 }
 
+void SQMBasicController::loadSkeleton(SkeletonNode *skeleton) {
+	SQMNode *sqmNode = new SQMNode(*skeleton, NULL);
+	if (sqmALgorithm != NULL) {
+		delete sqmALgorithm;
+	}
+	sqmALgorithm = new SQMAlgorithm();
+	sqmALgorithm->setRoot(sqmNode);
+}
+
 void SQMBasicController::saveSkeletonToFile(string fileName) {
 	ofstream errorLog("log.txt");
 	ofstream of(fileName);

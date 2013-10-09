@@ -18,65 +18,56 @@
     <None Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="EdgeLength.h">
+    <ClInclude Include="..\include\MeshGraph.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="FloatArithmetic.h">
+    <ClInclude Include="..\include\MyMesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Laplacian.h">
+    <ClInclude Include="..\include\OpenMeshVecOperations.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="LIE.h">
+    <ClInclude Include="..\include\SkeletonNode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="LIENeedEntry.h">
+    <ClInclude Include="..\include\SphereDelaunay.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="m_math.h">
+    <ClInclude Include="..\include\SQMAlgorithm.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MyMesh.h">
+    <ClInclude Include="..\include\SQMBasicController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SkeletonNode.h">
+    <ClInclude Include="..\include\SQMNode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SphereDelaunay.h">
+    <ClInclude Include="..\include\stdafx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SQMAlgorithm.h">
+    <ClInclude Include="..\include\Utility.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SQMBasicController.h">
+    <ClInclude Include="..\include\EdgeLength.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SQMNode.h">
+    <ClInclude Include="..\include\FloatArithmetic.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Utility.h">
+    <ClInclude Include="..\include\Laplacian.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="OpenMeshVecOperations.h">
+    <ClInclude Include="..\include\LIE.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="stdafx.h">
+    <ClInclude Include="..\include\LIENeedEntry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MeshGraph.h">
+    <ClInclude Include="..\include\m_math.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Utility.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="EdgeLength.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="FloatArithmetic.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Laplacian.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -92,6 +83,9 @@
     <ClCompile Include="MyMesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="OpenMeshVecOperations.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="SkeletonNode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -104,16 +98,22 @@
     <ClCompile Include="SQMBasicController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="sqmLibrary.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="SQMNode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="sqmLibrary.cpp">
-      <Filter>Header Files</Filter>
-    </ClCompile>
-    <ClCompile Include="OpenMeshVecOperations.cpp">
+    <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="stdafx.cpp">
+    <ClCompile Include="Utility.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="EdgeLength.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FloatArithmetic.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
