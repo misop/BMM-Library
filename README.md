@@ -21,8 +21,8 @@ class SQMBasicController executes SQM Algorithm and exports results
   
 Common Ussage:
 ===========
-SQMBasicController *sqm = new SQMBasicController();
-sqm->loadSkeletonFromFile(fileName); or sqm->loadSkeleton(skeleton);
-sqm->executeSQMAlgorithm();
-sqm->exportMeshToTriangles(points, indices); or sqm->exportMeshToFile(saveToFileName);
-delete sqm;
+	SQMBasicController *sqm = new SQMBasicController();
+	sqm->loadSkeletonFromFile(fileName); or sqm->loadSkeleton(skeleton);
+	sqm->executeSQMAlgorithm();
+	sqm->exportMeshToTriangles(points, indices); or sqm->exportMeshToFile(saveToFileName);
+	delete sqm;
