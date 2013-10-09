@@ -83,24 +83,6 @@
     <None Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\include\EdgeLength.h" />
-    <ClInclude Include="..\include\FloatArithmetic.h" />
-    <ClInclude Include="..\include\Laplacian.h" />
-    <ClInclude Include="..\include\LIE.h" />
-    <ClInclude Include="..\include\LIENeedEntry.h" />
-    <ClInclude Include="..\include\MeshGraph.h" />
-    <ClInclude Include="..\include\MyMesh.h" />
-    <ClInclude Include="..\include\m_math.h" />
-    <ClInclude Include="..\include\OpenMeshVecOperations.h" />
-    <ClInclude Include="..\include\SkeletonNode.h" />
-    <ClInclude Include="..\include\SphereDelaunay.h" />
-    <ClInclude Include="..\include\SQMAlgorithm.h" />
-    <ClInclude Include="..\include\SQMBasicController.h" />
-    <ClInclude Include="..\include\SQMNode.h" />
-    <ClInclude Include="..\include\stdafx.h" />
-    <ClInclude Include="..\include\Utility.h" />
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="EdgeLength.cpp" />
     <ClCompile Include="FloatArithmetic.cpp" />
     <ClCompile Include="Laplacian.cpp" />
@@ -109,14 +91,33 @@
     <ClCompile Include="MyMesh.cpp" />
     <ClCompile Include="m_math.cpp" />
     <ClCompile Include="OpenMeshVecOperations.cpp" />
-    <ClCompile Include="SkeletonNode.cpp" />
+    <ClCompile Include="SQMSkeletonNode.cpp" />
     <ClCompile Include="SphereDelaunay.cpp" />
     <ClCompile Include="SQMAlgorithm.cpp" />
     <ClCompile Include="SQMBasicController.cpp" />
-    <ClCompile Include="sqmLibrary.cpp" />
     <ClCompile Include="SQMNode.cpp" />
+    <ClCompile Include="sqm_library.cpp" />
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="Utility.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="EdgeLength.h" />
+    <ClInclude Include="FloatArithmetic.h" />
+    <ClInclude Include="Laplacian.h" />
+    <ClInclude Include="LIE.h" />
+    <ClInclude Include="LIENeedEntry.h" />
+    <ClInclude Include="MeshGraph.h" />
+    <ClInclude Include="MyMesh.h" />
+    <ClInclude Include="m_math.h" />
+    <ClInclude Include="OpenMeshVecOperations.h" />
+    <ClInclude Include="SphereDelaunay.h" />
+    <ClInclude Include="SQMAlgorithm.h" />
+    <ClInclude Include="SQMBasicController.h" />
+    <ClInclude Include="SQMNode.h" />
+    <ClInclude Include="SQMSkeletonNode.h" />
+    <ClInclude Include="sqm_library.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="Utility.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

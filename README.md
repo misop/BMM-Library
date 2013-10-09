@@ -2,28 +2,16 @@ SQM-Library
 ===========
 Skeleton To Quad Dominant Mesh library which I developed as my thesis.
 [Based on the original SQM algorithm.](http://wwwx.dtu.dk/English/Service/Phonebook.aspx?lg=showcommon&id=d52e0438-722a-4f62-ba1e-1c1e7fe6b18d)
-## Quick Doc:
-class SQMBasicController executes SQM Algorithm and exports results
+## Quick Ussage Doc:
 ```cpp
-void loadSkeletonFromFile(string fileName);//loads a skeleton class from file
-void loadSkeleton(SkeletonNode *skeleton);//loads a skeleton class
-void exportMeshToFile(string fileName);//exports mesh as a .obj file
-void exportMeshToTriangles(std::vector<float> &points, std::vector<int> &indices);//exports mesh as list of points (x1, y1, z1, x2, y2, z2, ...) and indices of triangles (0-2 first triangle, 3-5 second triangle, ...) which create mesh faces
-MyMesh* getMesh();//return OpenMesh mesh object
+void SQMLoadFromFileAndExportToFile(std::string input, std::string output);
+void SQMLoadFromFileAndExportToVectors(std::string input, std::vector<float> &points, std::vector<int> &indices);
 
-void restart();//resets the algorithm
-void straightenSkeleton();//straightens skeleton
-void computeConvexHull();//computes convex hulls of BNPs
-void subdivideConvexHull();//subdivides convex hulls
-void joinBNPs();//joins BNPs
-void executeSQMAlgorithm();//executes SQM algorithm to the end
-void executeSQMAlgorithm(SQMState state);//executes SQM algorithm up to a specified state
-```
-##Common Ussage:
-```cpp
-SQMBasicController *sqm = new SQMBasicController();
-sqm->loadSkeletonFromFile(fileName); /*or*/ sqm->loadSkeleton(skeleton);
-sqm->executeSQMAlgorithm();
-sqm->exportMeshToTriangles(points, indices); /*or*/ sqm->exportMeshToFile(saveToFileName);
-delete sqm;
+void SQMLoadFromSkeletonAndExportToFile(SQMSkeletonNode *skeleton, std::string output);
+void SQMLoadFromSkeletonAndExportToVectors(SQMSkeletonNode *skeleton, std::vector<float> &points, std::vector<int> &indices);
+//Files for loading are serialized SQMSkeletons with boost
+//file output is .obj file
+//vector ouput format is:
+//  point: x0, y0, z0, x1, y1, z1, ...
+//  indices: 0-2 first triangle, 3-5 second triangle, ...
 ```

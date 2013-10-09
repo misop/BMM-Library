@@ -30,7 +30,7 @@ void SQMBasicController::loadSkeletonFromFile(string fileName) {
 	ifstream inputFile(fileName);
 	assert(inputFile.good());
 	boost::archive::xml_iarchive inputArchive(inputFile);
-	SkeletonNode *node = NULL;
+	SQMSkeletonNode *node = NULL;
 	try {
 		inputArchive >> BOOST_SERIALIZATION_NVP(node);	
 	} catch (boost::archive::archive_exception e) {
@@ -46,7 +46,7 @@ void SQMBasicController::loadSkeletonFromFile(string fileName) {
 	delete node;
 }
 
-void SQMBasicController::loadSkeleton(SkeletonNode *skeleton) {
+void SQMBasicController::loadSkeleton(SQMSkeletonNode *skeleton) {
 	SQMNode *sqmNode = new SQMNode(*skeleton, NULL);
 	if (sqmALgorithm != NULL) {
 		delete sqmALgorithm;
@@ -60,7 +60,7 @@ void SQMBasicController::saveSkeletonToFile(string fileName) {
 	ofstream of(fileName);
 	assert(of.good());
 	boost::archive::xml_oarchive oa(of);
-	SkeletonNode *node = sqmALgorithm->getRoot()->exportToSkeletonNode();
+	SQMSkeletonNode *node = sqmALgorithm->getRoot()->exportToSkeletonNode();
 	try {
 		oa << BOOST_SERIALIZATION_NVP(node);	
 	} catch (boost::archive::archive_exception e) {

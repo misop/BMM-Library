@@ -23,7 +23,7 @@ SQMNode::SQMNode(void) {
 	transformationMatrix = glm::mat4();
 }
 
-SQMNode::SQMNode(SkeletonNode &node, SQMNode* newParent) : parent(newParent) {
+SQMNode::SQMNode(SQMSkeletonNode &node, SQMNode* newParent) : parent(newParent) {
 	if (parent == NULL) {
 		idStr = "0";
 	} else {
@@ -33,6 +33,8 @@ SQMNode::SQMNode(SkeletonNode &node, SQMNode* newParent) : parent(newParent) {
 	}
 	id = 0;
 	position = OpenMesh::Vec3f(node.point.x, node.point.y, node.point.z);
+	scalev = glm::vec3(node.scale.x, node.scale.y, node.scale.z);
+	rotatev = glm::vec3(node.rotate.x, node.rotate.y, node.rotate.z);
 	//nodeRadius = (float)(rand()%100)/100*10 + 5;
 	nodeRadius = node.radius;
 	tessLevel = 3;
@@ -231,7 +233,7 @@ void SQMNode::rotatePosition(Quaternion q, CVector3 offset) {
 }
 
 void SQMNode::addDescendant(float x, float y, float z) {
-	SkeletonNode *skeletonNode = new SkeletonNode(x, y, z);
+	SQMSkeletonNode *skeletonNode = new SQMSkeletonNode(x, y, z);
 	SQMNode *node = new SQMNode(*skeletonNode, this);
 	addDescendant(node);
 	delete skeletonNode;
@@ -301,8 +303,8 @@ void SQMNode::updateTransformationMatrix() {
 
 #pragma region Export
 
-SkeletonNode* SQMNode::exportToSkeletonNode() {
-	SkeletonNode* node = new SkeletonNode(position[0], position[1], position[2], nodeRadius);
+SQMSkeletonNode* SQMNode::exportToSkeletonNode() {
+	SQMSkeletonNode* node = new SQMSkeletonNode(position[0], position[1], position[2], nodeRadius);
 	for (int i = 0; i < nodes.size(); i++) {
 		node->addChild(nodes[i]->exportToSkeletonNode());
 	}
