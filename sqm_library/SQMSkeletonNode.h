@@ -1,5 +1,5 @@
 #pragma once
-#include "m_math.h"
+#include "mm_math.h"
 #include <vector>
 #include <boost/serialization/version.hpp>
 
@@ -9,9 +9,9 @@ class SQMSkeletonNode
 {
 	friend class boost::serialization::access;
 public:
-	CVector3 point;
-	CVector3 scale;
-	CVector3 rotate;
+	MMath::CVector3 point;
+	MMath::CVector3 scale;
+	MMath::CVector3 rotate;
 	float radius;
 	int id;
 	bool cyclic;

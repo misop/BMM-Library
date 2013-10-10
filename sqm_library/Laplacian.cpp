@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "Laplacian.h"
 
+using namespace MMath;
+
 void contractMeshGraphCPUCotangent(MeshGraph * pMesh) {
 	//filebuf *fb = new filebuf();
 	static int logInd = 0;

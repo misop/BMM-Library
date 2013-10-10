@@ -1,7 +1,7 @@
 #pragma once
 #include "MyMesh.h"
 #include <vector>
-#include "m_math.h"
+#include "mm_math.h"
 
 struct LIE {
 	int refined;
@@ -11,7 +11,7 @@ struct LIE {
 	MyTriMesh::VHandle vhandle2;
 	MyTriMesh::HHandle firstHHandle;
 	MyTriMesh::HHandle lastHHandle;
-	Quaternion quaternion;
+	MMath::Quaternion quaternion;
 
 	std::vector<MyTriMesh::EdgeHandle> edges;
 

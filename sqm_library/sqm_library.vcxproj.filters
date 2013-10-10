@@ -27,9 +27,6 @@
     <ClCompile Include="LIENeedEntry.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="m_math.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="MyMesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -66,6 +63,9 @@
     <ClCompile Include="sqm_library.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="mm_math.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EdgeLength.h">
@@ -81,9 +81,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="LIENeedEntry.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="m_math.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="MeshGraph.h">
@@ -117,6 +114,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="sqm_library.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mm_math.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,13 +1,13 @@
 #pragma once
 #include <boost\unordered_map.hpp>
 #include <tnt/tnt_array2d.h>
-#include "m_math.h"
+#include "mm_math.h"
 
 using namespace TNT;
 
 struct MeshGraph {
     int numOfVertices;
-    CVector3 * pVerts;            // The object's vertices
+    MMath::CVector3 * pVerts;            // The object's vertices
     boost::unordered_map<int, int> indices; // mGindex = meshGraph->indices[index + offset]; 
     //boost::unordered_map<int, vector<int>> inverseIndices; // inverseIndices[mgIndex] = vector of original triangle indices + offset
 	Array2D<bool> E;
@@ -25,7 +25,7 @@ struct MeshGraph {
     unsigned int gMeshgraphLinesVB;
 
     MeshGraph(){
-        pVerts = new CVector3[0];
+		pVerts = new MMath::CVector3[0];
         wH = new float[0];
         wHorig = new float[0];
         origOneRingArea = new float[0];

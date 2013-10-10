@@ -41,7 +41,7 @@ class SQMNode {
 	OpenMesh::Vec3f position;
 	OpenMesh::Vec3f centerOfMass;
 	OpenMesh::Vec3f oldPosition;
-	Quaternion axisAngle;
+	MMath::Quaternion axisAngle;
 	vector<SQMNode*> nodes;
 	vector<OpenMesh::Vec3f> intersections;
 	MyTriMesh *polyhedron;
@@ -78,7 +78,7 @@ public:
 	vector<MyTriMesh::VertexHandle>* getIntersectionVHandles();
 	float getNodeRadius();
 	float getTessLevel();
-	Quaternion getAxisAngle();
+	MMath::Quaternion getAxisAngle();
 	int getNumOfChilds();
 	float getX();
 	float getY();
@@ -102,7 +102,7 @@ public:
 	void setPosition(OpenMesh::Vec3f newPosition);
 	void setPosition(float x, float y, float z);
 	void addDescendant(SQMNode* node);
-	void rotatePosition(Quaternion q, CVector3 offset);
+	void rotatePosition(MMath::Quaternion q, MMath::CVector3 offset);
 	void addDescendant(float x, float y, float z);
 	void setX(float newX);
 	void setY(float newY);
@@ -191,7 +191,7 @@ public:
 #pragma endregion
 
 #pragma region Utility
-	void rotateSelfAndDescendants(Quaternion q, CVector3 offset);
+	void rotateSelfAndDescendants(MMath::Quaternion q, MMath::CVector3 offset);
 	SQMNode* getDescendantBranchNode(SQMNode* node);
 	SQMNode* getAncestorBranchNode(SQMNode* node);
 	MyMesh::VHandle getSecondVHandle(MyMesh::EdgeHandle edgeHandle, MyMesh::VHandle vhandle);

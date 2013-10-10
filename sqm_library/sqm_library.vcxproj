@@ -89,7 +89,7 @@
     <ClCompile Include="LIE.cpp" />
     <ClCompile Include="LIENeedEntry.cpp" />
     <ClCompile Include="MyMesh.cpp" />
-    <ClCompile Include="m_math.cpp" />
+    <ClCompile Include="mm_math.cpp" />
     <ClCompile Include="OpenMeshVecOperations.cpp" />
     <ClCompile Include="SQMSkeletonNode.cpp" />
     <ClCompile Include="SphereDelaunay.cpp" />
@@ -108,7 +108,7 @@
     <ClInclude Include="LIENeedEntry.h" />
     <ClInclude Include="MeshGraph.h" />
     <ClInclude Include="MyMesh.h" />
-    <ClInclude Include="m_math.h" />
+    <ClInclude Include="mm_math.h" />
     <ClInclude Include="OpenMeshVecOperations.h" />
     <ClInclude Include="SphereDelaunay.h" />
     <ClInclude Include="SQMAlgorithm.h" />

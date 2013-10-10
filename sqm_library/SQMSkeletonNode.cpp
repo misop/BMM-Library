@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "SQMSkeletonNode.h"
 
+using namespace MMath;
 
 SQMSkeletonNode::SQMSkeletonNode (void) : point(CVector3()), scale(CVector3(1, 1, 1)), rotate(CVector3()), radius(10), id(0), cyclic(false)
 {

@@ -8,6 +8,8 @@
 
 #define BIAS 0.1
 
+using namespace MMath;
+
 #pragma region Init
 
 SQMNode::SQMNode(void) {
