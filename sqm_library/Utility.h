@@ -27,3 +27,9 @@ bool raySphereIntersection(OpenMesh::Vec3f ray_origin, OpenMesh::Vec3f ray_direc
 bool raySphereIntersection(glm::vec3 ray_origin, glm::vec3 ray_direction, glm::vec3 sphere_center, float sphere_radius, float &t_param);
 bool rayTriangleIntersection(OpenMesh::Vec3f ray_origin, OpenMesh::Vec3f ray_direction, OpenMesh::Vec3f V0, OpenMesh::Vec3f V1, OpenMesh::Vec3f V2, float &t_param);
 #pragma endregion
+
+#pragma region Vector functions
+OpenMesh::Vec3f getAxisForCross(OpenMesh::Vec3f v);
+#pragma endregion
+
+glm::vec2 bezier(glm::vec2 P1, glm::vec2 P2, float t);

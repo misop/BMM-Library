@@ -78,3 +78,25 @@ bool rayTriangleIntersection(OpenMesh::Vec3f ray_origin, OpenMesh::Vec3f ray_dir
 }
 
 #pragma endregion
+
+#pragma region Vector functions
+
+OpenMesh::Vec3f getAxisForCross(OpenMesh::Vec3f v) {
+	//return the axis corresponding to the smallest non zero magnitude
+	OpenMesh::Vec3f u = OpenMesh::Vec3f(fabs(v[0]), fabs(v[1]), fabs(v[2]));
+	if ((u[0] <= u[1]) && (u[0] <= u[2]) && (!equal(u[0], 0))) {
+		return OpenMesh::Vec3f(1, 0, 0);
+	}
+	if ((u[1] <= u[0]) && (u[1] <= u[2]) && (!equal(u[1], 0))) {
+		return OpenMesh::Vec3f(0, 1, 0);
+	}
+	return OpenMesh::Vec3f(0, 0, 1);
+}
+
+#pragma endregion
+
+glm::vec2 bezier(glm::vec2 P1, glm::vec2 P2, float t) {
+	glm::vec2 P0(0.0, 0.0);
+	glm::vec2 P3(1.0, 1.0);
+	return (pow(1 - t, 3)*P0 + 3*pow(1 - t, 2)*t*P1 + 3*(1 - t)*pow(t, 2)*P2 + pow(t, 3)*P3);
+}

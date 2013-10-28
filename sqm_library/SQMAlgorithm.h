@@ -22,6 +22,10 @@ class SQMAlgorithm {
 	ostream *os;
 	int numOfNodes;
 	SQMSmoothingAlgorithm smoothingAlgorithm;
+
+	SQMNode* findBNPInTree();
+	void swapRoot(SQMNode *node);
+	void fixWorm();
 public:
 	SQMAlgorithm(void);
 	~SQMAlgorithm(void);

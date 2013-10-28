@@ -28,17 +28,26 @@ typedef enum {
 	SQMOneRingLaplacianSmoothing
 } SQMSmoothingAlgorithm;
 
+typedef enum {
+	SQMNone = 0,
+	SQMPoint,
+	SQMCapsule,
+	SQMCycle
+} SQMNodeType;
+
 #pragma endregion
 
 class SQMNode {
 	friend class boost::serialization::access;
-	
+
 	unsigned int id;
 	string idStr;
 	SQMNode* parent;
 	float nodeRadius;
 	float tessLevel;
+	SQMNodeType sqmNodeType;
 	OpenMesh::Vec3f position;
+	OpenMesh::Vec3f originalPosition;
 	OpenMesh::Vec3f centerOfMass;
 	OpenMesh::Vec3f oldPosition;
 	MMath::Quaternion axisAngle;
@@ -70,7 +79,10 @@ public:
 	bool isBranchNode();
 	bool isLeafNode();
 	OpenMesh::Vec3f getPosition();
+	OpenMesh::Vec3f getOldPosition();
+	OpenMesh::Vec3f getOriginalPosition();
 	glm::vec3 getPosition_glm();
+	SQMNodeType getSQMNodeType();
 	vector<SQMNode*>* getNodes();
 	SQMNode* getParent();
 	MyTriMesh* getPolyhedron();
@@ -101,9 +113,12 @@ public:
 	void setTessLevel(float newTessLevel);
 	void setPosition(OpenMesh::Vec3f newPosition);
 	void setPosition(float x, float y, float z);
+	void setSQMNodeType(SQMNodeType newType);
 	void addDescendant(SQMNode* node);
 	void rotatePosition(MMath::Quaternion q, MMath::CVector3 offset);
 	void addDescendant(float x, float y, float z);
+	void removeDescendant(SQMNode* node);
+	void removeDescendants();
 	void setX(float newX);
 	void setY(float newY);
 	void setZ(float newZ);
@@ -115,10 +130,15 @@ public:
 	void setRotateY(float value);
 	void setRotateZ(float value);
 	void updateTransformationMatrix();
+	void addVHandleToRotate(MyMesh::VHandle vh);
 #pragma endregion
 
 #pragma region Export
 	SQMSkeletonNode* exportToSkeletonNode();
+#pragma endregion
+
+#pragma region SQM Preprocessing
+	void createCapsules(int minSmallCircles = 5);
 #pragma endregion
 
 #pragma region Skeleton Straightening
@@ -145,7 +165,7 @@ public:
 	void splitLIE(LIE lie, std::map<int, LIENeedEntry>& lieMap, int entryIndex, int lieIndex, SQMSmoothingAlgorithm algorithm);
 	LIE splitLIEEdge(LIE lie);
 	MyTriMesh::EHandle splitEdgeInHalfAndReturnNewEdge(MyTriMesh::EdgeHandle eh);
-	
+
 #pragma endregion
 
 #pragma region Smoothing
@@ -190,6 +210,21 @@ public:
 	void fillCentersTable(float *table);
 #pragma endregion
 
+#pragma region SQM Special Cases
+
+#pragma region Single Node
+	void createScaledIcosahderon(MyMesh* mesh);
+#pragma endregion
+
+#pragma region Worm
+	void wormCreate(MyMesh *mesh, int vertices = 5);
+	void wormStraighten(OpenMesh::Vec3f lineVector);
+	void wormStep(MyMesh *mesh, vector<MyMesh::VHandle> &oneRing, OpenMesh::Vec3f lineVector);
+	void wormFinalVertexPlacement(MyMesh *mesh);
+#pragma endregion
+
+#pragma endregion
+
 #pragma region Utility
 	void rotateSelfAndDescendants(MMath::Quaternion q, MMath::CVector3 offset);
 	SQMNode* getDescendantBranchNode(SQMNode* node);
@@ -209,7 +244,7 @@ protected:
 	template<class Archive>
 	void serialize(Archive & ar, const unsigned int version) {
 		//ar & boost::serialization::base_object<SkeletonNode>(*this);  //serialize base class
-		ar & BOOST_SERIALIZATION_BASE_OBJECT_NVP(SQMSkeletonNode);
+		ar & BOOST_SERIALIZATION_BASE_OBJECT_NVP(SkeletonNode);
 	}
 #pragma endregion
 
