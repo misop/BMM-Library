@@ -106,7 +106,7 @@ void SQMBasicController::joinBNPs() {
 }
 
 void SQMBasicController::executeSQMAlgorithm() {
-	sqmALgorithm->executeSQMAlgorithm();
+	sqmALgorithm->executeSQMAlgorithm(SQMJoinBNPs);
 }
 
 void SQMBasicController::executeSQMAlgorithm(SQMState state) {
