@@ -667,7 +667,7 @@ void SQMNode::openMeshFromIdexedFace(vector<OpenMesh::Vec3f> vertices, vector<Op
 		OpenMesh::Vec3i face = faces[i];
 		polyhedron->add_face(polyhedronPoints[face.values_[0]], polyhedronPoints[face.values_[1]], polyhedronPoints[face.values_[2]]);
 	}
-	writeTriMesh(polyhedron);
+	//writeTriMesh(polyhedron);
 }
 
 //-----------------------TEST------------------------
