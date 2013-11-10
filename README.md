@@ -11,6 +11,7 @@ void SQMLoadFromSkeletonAndExportToFile(SQMSkeletonNode *skeleton, std::string o
 void SQMLoadFromSkeletonAndExportToVectors(SQMSkeletonNode *skeleton, std::vector<float> &points, std::vector<int> &indices, bool CPUSkinning = false);
 ```
 ####Usage
+ ```
 Files for loading are serialized SQMSkeletons with boost
 file output is .obj file
 vector ouput format is:
@@ -18,5 +19,6 @@ vector ouput format is:
   indices: 0-2 first triangle, 3-5 second triangle, ...
 By default the algorithm will produce straightened mesh
 Rotation to original pose is done with skinning on CPU
+```
 ####Used Libraries
 SQM-library is using boost 1.51 and OpenMesh 2.2
