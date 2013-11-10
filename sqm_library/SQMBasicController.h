@@ -26,6 +26,7 @@ public:
 	void subdivideConvexHull();
 	void joinBNPs();
 	void executeSQMAlgorithm();
+	void executeSQMAlgorithm(bool CPUSkinning);
 	void executeSQMAlgorithm(SQMState state);
 };
 

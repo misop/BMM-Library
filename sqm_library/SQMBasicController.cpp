@@ -109,6 +109,10 @@ void SQMBasicController::executeSQMAlgorithm() {
 	sqmALgorithm->executeSQMAlgorithm(SQMJoinBNPs);
 }
 
+void SQMBasicController::executeSQMAlgorithm(bool CPUSkinning) {
+	sqmALgorithm->executeSQMAlgorithm(CPUSkinning ? SQMFinalPlacement : SQMJoinBNPs);
+}
+
 void SQMBasicController::executeSQMAlgorithm(SQMState state) {
 	sqmALgorithm->executeSQMAlgorithm(state);
 }

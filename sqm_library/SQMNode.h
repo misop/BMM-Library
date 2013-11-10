@@ -9,6 +9,7 @@
 #include "EdgeLength.h"
 #include "LIENeedEntry.h"
 #include "Utility.h"
+#include "SkinSkeleton.h"
 
 #pragma region Structs & Enums
 
@@ -32,7 +33,9 @@ typedef enum {
 	SQMNone = 0,
 	SQMPoint,
 	SQMCapsule,
-	SQMCycle
+	SQMCycle,
+	SQMFormerCapsule,
+	SQMCreatedCapsule
 } SQMNodeType;
 
 #pragma endregion
@@ -41,7 +44,7 @@ class SQMNode {
 	friend class boost::serialization::access;
 
 	unsigned int id;
-	string idStr;
+	std::string idStr;
 	SQMNode* parent;
 	float nodeRadius;
 	float tessLevel;
@@ -51,6 +54,7 @@ class SQMNode {
 	OpenMesh::Vec3f centerOfMass;
 	OpenMesh::Vec3f oldPosition;
 	MMath::Quaternion axisAngle;
+	glm::ivec2 skinningIDs;
 	vector<SQMNode*> nodes;
 	vector<OpenMesh::Vec3f> intersections;
 	MyTriMesh *polyhedron;
@@ -77,6 +81,7 @@ public:
 	unsigned int getId();
 	string getIdStr();
 	bool isBranchNode();
+	bool isConnectionNode();
 	bool isLeafNode();
 	OpenMesh::Vec3f getPosition();
 	OpenMesh::Vec3f getOldPosition();
@@ -135,6 +140,7 @@ public:
 
 #pragma region Export
 	SQMSkeletonNode* exportToSkeletonNode();
+	SkinSkeleton* exportToSkinSkeleton(SkinSkeleton *parentSkin);
 #pragma endregion
 
 #pragma region SQM Preprocessing
@@ -199,12 +205,17 @@ public:
 
 #pragma region Final Vertex Placement
 	void rotateBack(MyMesh *mesh);
+	void rotateWithSkeleton(MyMesh *mesh, SkinSkeleton *skeleton);
+#pragma endregion
+
+#pragma region Skinning Matrix Setup
+	void setupSkinningMatrixIDs(SkinSkeleton *skeleton);
 #pragma endregion
 
 #pragma region BNP Tesselation
 	void getMeshTessLevel(std::vector<float> &tessLevels);
 	void getMeshTessDataf(std::vector<float> &tessLevels, std::vector<float> &nodePositions, std::vector<float> &data);
-	void getMeshTessDatai(std::vector<float> &tessLevels, std::vector<float> &nodePositions, std::vector<int> &data);
+	void getMeshTessDatai(std::vector<float> &tessLevels, std::vector<float> &nodePositions, std::vector<int> &skinMatrices, std::vector<int> &data);
 	void calculateOneRingRadiusAndMap(std::vector<float> &oneRingRadius, std::map<int, std::vector<int> > &intersectionMap);
 	void fillRadiusTable(float *table, int width);
 	void fillCentersTable(float *table);

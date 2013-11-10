@@ -187,6 +187,20 @@ public:
 		return CVector4(s * num, i * num, j * num, k * num);
 	}
 
+	CVector4 operator* (CVector4 rkQ)
+	{
+		// NOTE:  Multiplication is not generally commutative, so in most
+		// cases p*q != q*p.
+
+		return CVector4
+			(
+			s * rkQ.s - i * rkQ.i - j * rkQ.j - k * rkQ.k,
+			s * rkQ.i + i * rkQ.s + j * rkQ.k - k * rkQ.j,
+			s * rkQ.j + j * rkQ.s + k * rkQ.i - i * rkQ.k,
+			s * rkQ.k + k * rkQ.s + i * rkQ.j - j * rkQ.i
+			);
+	}
+
 	// Here we overload the / operator so we can divide by a scalar
 	CVector4 operator/(float num)
 	{

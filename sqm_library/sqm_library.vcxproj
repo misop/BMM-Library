@@ -91,6 +91,7 @@
     <ClCompile Include="MyMesh.cpp" />
     <ClCompile Include="mm_math.cpp" />
     <ClCompile Include="OpenMeshVecOperations.cpp" />
+    <ClCompile Include="SkinSkeleton.cpp" />
     <ClCompile Include="SQMSkeletonNode.cpp" />
     <ClCompile Include="SphereDelaunay.cpp" />
     <ClCompile Include="SQMAlgorithm.cpp" />
@@ -110,6 +111,7 @@
     <ClInclude Include="MyMesh.h" />
     <ClInclude Include="mm_math.h" />
     <ClInclude Include="OpenMeshVecOperations.h" />
+    <ClInclude Include="SkinSkeleton.h" />
     <ClInclude Include="SphereDelaunay.h" />
     <ClInclude Include="SQMAlgorithm.h" />
     <ClInclude Include="SQMBasicController.h" />
