@@ -83,6 +83,7 @@
     <None Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Delaunay.cpp" />
     <ClCompile Include="EdgeLength.cpp" />
     <ClCompile Include="FloatArithmetic.cpp" />
     <ClCompile Include="Laplacian.cpp" />
@@ -102,6 +103,7 @@
     <ClCompile Include="Utility.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Delaunay.h" />
     <ClInclude Include="EdgeLength.h" />
     <ClInclude Include="FloatArithmetic.h" />
     <ClInclude Include="Laplacian.h" />

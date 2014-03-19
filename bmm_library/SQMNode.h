@@ -7,6 +7,7 @@
 #include <queue>
 #include "MyMesh.h"
 #include "EdgeLength.h"
+//#include <GL/glu.h>
 #include "LIENeedEntry.h"
 #include "Utility.h"
 #include "SkinSkeleton.h"
@@ -34,6 +35,7 @@ typedef enum {
 	SQMPoint,
 	SQMCapsule,
 	SQMCycle,
+	SQMCycleLeaf,
 	SQMFormerCapsule,
 	SQMCreatedCapsule
 } SQMNodeType;
@@ -44,8 +46,10 @@ class SQMNode {
 	friend class boost::serialization::access;
 
 	unsigned int id;
-	std::string idStr;
+	string idStr;
 	SQMNode* parent;
+	SQMNode *cycleNode;
+	vector<SQMNode*> cycleParents;
 	float nodeRadius;
 	float tessLevel;
 	SQMNodeType sqmNodeType;
@@ -65,6 +69,9 @@ class SQMNode {
 	vector<MyTriMesh::VertexHandle> intersectionVHandles;
 	vector<MyTriMesh::VertexHandle> meshIntersectionVHandles;
 	vector<MyMesh::VertexHandle> meshVhandlesToRotate;
+	vector<glm::vec3> cyclePoints;
+	vector<MyMesh::VertexHandle> cycleVHandles;
+	bool isCyclic;
 
 	vector<OpenMesh::Vec3f> normals2;
 	vector<OpenMesh::Vec3f> centers2;
@@ -74,6 +81,7 @@ public:
 	SQMNode(void);
 	SQMNode(SQMSkeletonNode &node, SQMNode* newParent);
 	SQMNode(SQMNode &node);
+	SQMNode(SQMNode &node, bool shalow);
 	~SQMNode(void);	
 #pragma endregion
 
@@ -83,6 +91,8 @@ public:
 	bool isBranchNode();
 	bool isConnectionNode();
 	bool isLeafNode();
+	bool isValidCycleNode();
+	bool isCycleNode();
 	OpenMesh::Vec3f getPosition();
 	OpenMesh::Vec3f getOldPosition();
 	OpenMesh::Vec3f getOriginalPosition();
@@ -90,9 +100,12 @@ public:
 	SQMNodeType getSQMNodeType();
 	vector<SQMNode*>* getNodes();
 	SQMNode* getParent();
+	SQMNode* getCycleNode();
 	MyTriMesh* getPolyhedron();
 	vector<SQMNode*>* getDescendants();
 	vector<MyTriMesh::VertexHandle>* getIntersectionVHandles();
+	vector<MyMesh::VertexHandle>* getCycleVHandles();
+	vector<glm::vec3>* getCyclePoints();
 	float getNodeRadius();
 	float getTessLevel();
 	MMath::Quaternion getAxisAngle();
@@ -109,18 +122,26 @@ public:
 	float getRotateX();
 	float getRotateY();
 	float getRotateZ();
+	bool getIsCapsule();
+	bool isAncestor(SQMNode* node);
+	bool getIsCyclic();
 #pragma endregion
 
 #pragma region Setters
 	void setID(unsigned int newID);
 	void setParent(SQMNode *node);
+	void setCycleNode(SQMNode *node);
 	void setNodeRadius(float newNodeRadius);
 	void setTessLevel(float newTessLevel);
 	void setPosition(OpenMesh::Vec3f newPosition);
+	void setPositionAndAdjustDescendants(OpenMesh::Vec3f newPosition);
+	void movePositionAndAdjustDescendants(OpenMesh::Vec3f offset);
 	void setPosition(float x, float y, float z);
 	void setSQMNodeType(SQMNodeType newType);
 	void addDescendant(SQMNode* node);
 	void rotatePosition(MMath::Quaternion q, MMath::CVector3 offset);
+	void rotateDescendants(MMath::Quaternion q);
+	void rotateDescendants(MMath::Quaternion q, MMath::CVector3 offset);
 	void addDescendant(float x, float y, float z);
 	void removeDescendant(SQMNode* node);
 	void removeDescendants();
@@ -136,6 +157,15 @@ public:
 	void setRotateZ(float value);
 	void updateTransformationMatrix();
 	void addVHandleToRotate(MyMesh::VHandle vh);
+	void setIsCapsule(bool isCapsule);
+	void addIntersection(OpenMesh::Vec3f intersection);
+	void setIsCyclic(bool cyclic);
+#pragma endregion
+
+#pragma region Cycles
+	void createCycle(SQMNode *node);
+	void rotateCycleOneRing();
+	void projectOnPlaneRotateAndScale(MyMesh *mesh, glm::vec3 origin, glm::vec3 normal);
 #pragma endregion
 
 #pragma region Export
@@ -144,17 +174,21 @@ public:
 #pragma endregion
 
 #pragma region SQM Preprocessing
+	void breakCycles();
 	void createCapsules(int minSmallCircles = 5);
 #pragma endregion
 
 #pragma region Skeleton Straightening
 	void straightenSkeleton(OpenMesh::Vec3f *lineVector);
+	void straightenSkl();
+	void straightenSkl(glm::vec4 odir, glm::mat4 M);
 #pragma endregion
 
 #pragma region BNP Generation
 	void calculateConvexHull();
 	void createPolyhedra(vector<OpenMesh::Vec3i> triangles);
 	OpenMesh::Vec3f translatedPointToSphereWithFaceNormals(OpenMesh::Vec3f p, OpenMesh::Vec3f n1, OpenMesh::Vec3f n2, OpenMesh::Vec3f center1, OpenMesh::Vec3f center2);
+	OpenMesh::Vec3f translatedPointToSphereWithCenterOfMass(OpenMesh::Vec3f p);
 	vector<int> getNormalIndexis(vector<int> indexis, int index);
 	void openMeshFromIdexedFace(vector<OpenMesh::Vec3f> vertices, vector<OpenMesh::Vec3i> faces);
 
@@ -201,6 +235,7 @@ public:
 	void addPolyhedronAndRememberVHandles(MyMesh* mesh, SQMNode* parentBNPNode, vector<MyMesh::VertexHandle>& oneRing, vector<vector<MyMesh::VHandle> >& oneRingsOfPolyhedron, OpenMesh::Vec3f& directionVector);
 	void extendMesh(MyMesh* mesh, SQMNode* parentBNPNode, vector<MyMesh::VertexHandle>& oneRing, OpenMesh::Vec3f& directionVector);
 	void finishLeafeNode(MyMesh* mesh, vector<MyMesh::VertexHandle>& oneRing);
+	void finishLeafeCycleNode(MyMesh* mesh, vector<MyMesh::VertexHandle>& oneRing, OpenMesh::Vec3f directionVector);
 #pragma endregion
 
 #pragma region Final Vertex Placement
@@ -216,6 +251,7 @@ public:
 	void getMeshTessLevel(std::vector<float> &tessLevels);
 	void getMeshTessDataf(std::vector<float> &tessLevels, std::vector<float> &nodePositions, std::vector<float> &data);
 	void getMeshTessDatai(std::vector<float> &tessLevels, std::vector<float> &nodePositions, std::vector<int> &skinMatrices, std::vector<int> &data);
+	void getMeshData(std::vector<int> &skinMatrices, std::vector<float> &skinWeights);
 	void calculateOneRingRadiusAndMap(std::vector<float> &oneRingRadius, std::map<int, std::vector<int> > &intersectionMap);
 	void fillRadiusTable(float *table, int width);
 	void fillCentersTable(float *table);
@@ -245,6 +281,7 @@ public:
 	MyTriMesh::HalfedgeHandle nextLink(MyTriMesh::HalfedgeHandle heh);
 	MyTriMesh::HalfedgeHandle prevLink(MyTriMesh::HalfedgeHandle heh);
 	MyTriMesh::VHandle oppositeVHandle(MyTriMesh::HalfedgeHandle heh);
+	void translateAndScalePointsToSphere(MyMesh* mesh, vector<MyMesh::VertexHandle>& oneRing, OpenMesh::Vec3f& directionVector, vector<MyMesh::Point>& points);
 #pragma endregion
 
 protected:
@@ -280,12 +317,21 @@ bool lesser(MyMesh::FaceHandle& a, MyMesh::FaceHandle& b);
 bool validTriFace(vector<MyMesh::VHandle>& faceVHandles);
 OpenMesh::Vec3i flipVec3i(OpenMesh::Vec3i& v);
 bool sameOneRingOrientation(MyMesh* mesh, vector<MyMesh::VHandle>& oneRing, vector<MyMesh::VHandle>& oneRing2, OpenMesh::Vec3f& center1, OpenMesh::Vec3f& center2, OpenMesh::Vec3f& direction);
+bool equalOrientation(MyMesh::Point P0, MyMesh::Point P1, MyMesh::Point Q0, MyMesh::Point Q1, OpenMesh::Vec3f& direction);
+MyMesh::Point preparePointForOrientationCheck(MyMesh::Point P, OpenMesh::Vec3f& center, OpenMesh::Vec3f& direction);
 int inLIEs(std::vector<LIE>& LIEs, MyTriMesh::VHandle vh1, MyTriMesh::VHandle vh2);
 #pragma endregion
 
 #pragma region SQMNode Functions
 int verticeDifferenceFatherSon(SQMNode* father, SQMNode* son, MyTriMesh::VHandle vhandle);
 SQMNode* lastBranchNodeInChain(SQMNode* node);
+#pragma endregion
+
+#pragma region Helper Functions
+glm::vec3 projectPointOntoPlane(glm::vec3 point, glm::vec3 origin, glm::vec3 normal);
+OpenMesh::Vec3f projectPointOntoPlane(OpenMesh::Vec3f point, OpenMesh::Vec3f origin, OpenMesh::Vec3f normal);
+bool isObtuseTriangle(OpenMesh::Vec3f v1, OpenMesh::Vec3f v2, OpenMesh::Vec3f v3);
+glm::mat4 matrixRotationBetweenVectors(glm::vec4 A, glm::vec4 B, glm::vec4 C);
 #pragma endregion
 
 #pragma endregion

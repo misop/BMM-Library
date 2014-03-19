@@ -2,8 +2,9 @@
 #include "SQMAlgorithm.h"
 #include <OpenMesh\Core\System\mostream.hh>
 #include <glm\gtc\type_ptr.hpp>
+#include "Delaunay.h"
 
-#define LOG_COMPUTATION_TIME false
+#define LOG_COMPUTATION_TIME true
 
 SQMAlgorithm::SQMAlgorithm(void) : root(NULL)
 {
@@ -12,13 +13,16 @@ SQMAlgorithm::SQMAlgorithm(void) : root(NULL)
 	mesh = NULL;
 	fb = new filebuf();
 	os = new ostream(fb);
-	omerr().connect(*os);
+	//omerr().connect(*os);
 	root = new SQMNode();
 	resetRoot = NULL;
 	numOfNodes = 1;
 	smoothingAlgorithm = SQMAvaragingSmoothing;
 	skeleton = NULL;
 	numOfSkinMatrices = 0;
+	useCapsules = true;
+	useCPUSkinning = true;
+	hasCycle = false;
 }
 
 SQMAlgorithm::~SQMAlgorithm(void)
@@ -53,6 +57,18 @@ void SQMAlgorithm::setNumberOfNodes(int newNumberOfNodes) {
 
 void SQMAlgorithm::setSmoothingAlgorithm(SQMSmoothingAlgorithm sqmSmoothingAlgorithm) {
 	smoothingAlgorithm = sqmSmoothingAlgorithm;
+}
+
+void SQMAlgorithm::setUseCapsules(bool newUseCapsules) {
+	useCapsules = newUseCapsules;
+}
+
+void SQMAlgorithm::setUseCPUSkinning(bool newUseCPUSkinning) {
+	useCPUSkinning = newUseCPUSkinning;
+}
+
+void SQMAlgorithm::setHasCycle(bool cyclic) {
+	hasCycle = cyclic;
 }
 
 #pragma endregion
@@ -165,7 +181,7 @@ void SQMAlgorithm::getTransformMatrices(float* matrix) {
 	if (skeleton == NULL || numOfSkinMatrices == 0) return;
 
 	SQMNode *start = root;
-	while (root->getSQMNodeType() == SQMCreatedCapsule) {
+	while (start->getSQMNodeType() == SQMCreatedCapsule) {
 		//this is worms head should move to original node
 		start = (*start->getNodes())[0];
 	}
@@ -321,6 +337,109 @@ void SQMAlgorithm::fixWorm() {
 	}
 }
 
+void SQMAlgorithm::rotateCycleOneRings() {
+	deque<SQMNode*> queue;
+	if (root != NULL) queue.push_back(root);
+
+	while (!queue.empty()) {
+		SQMNode *node = queue.front();
+		queue.pop_front();
+
+		if (node->getSQMNodeType() == SQMCycleLeaf) {
+			node->rotateCycleOneRing();
+		}
+
+		for (int i = 0; i < node->getNodes()->size(); i++) {
+			queue.push_back((*node->getNodes())[i]);
+		}
+	}
+}
+
+void SQMAlgorithm::triangulateOneRings() {
+	deque<SQMNode*> queue;
+	if (root != NULL) queue.push_back(root);
+
+	while (!queue.empty()) {
+		SQMNode *node = queue.front();
+		SQMNode *cycleNode = node->getCycleNode();
+		queue.pop_front();
+
+		if (node->getSQMNodeType() == SQMCycleLeaf && cycleNode != NULL) {
+			vector<glm::vec3> *nodePoints = node->getCyclePoints();
+			vector<glm::vec3> *cyclePoints = cycleNode->getCyclePoints();
+			vector<glm::vec3> points;
+			points.insert(points.end(), (*nodePoints).begin(), (*nodePoints).end());
+			points.insert(points.end(), (*cyclePoints).begin(), (*cyclePoints).end());
+			vector<glm::ivec3> triangles;
+			Triangulate(points, triangles);
+			addTrianglesToMesh(node, cycleNode, triangles, (*nodePoints).size());
+		}
+
+		for (int i = 0; i < node->getNodes()->size(); i++) {
+			queue.push_back((*node->getNodes())[i]);
+		}
+	}
+}
+
+void SQMAlgorithm::addTrianglesToMesh(SQMNode* node, SQMNode* cycleNode, std::vector<glm::ivec3> &triangles, int split) {
+	vector<MyMesh::VHandle> *nodeVHandles = node->getCycleVHandles();
+	vector<MyMesh::VHandle> *cycleVHandles = cycleNode->getCycleVHandles();
+
+	for (int i = 0; i < triangles.size(); i++) {
+		glm::ivec3 triangle = triangles[i];
+		bool smallerX = triangle.x < split;
+		bool smallerY = triangle.y < split;
+		bool smallerZ = triangle.z < split;
+		//only tow out of three can be from the same interval
+		if (!((smallerX && smallerY && smallerZ) || (!smallerX && !smallerY && !smallerZ))) {
+			int idx1 = smallerX ? triangle.x : triangle.x - split;
+			int idx2 = smallerY ? triangle.y : triangle.y - split;
+			int idx3 = smallerZ ? triangle.z : triangle.z - split;
+			MyMesh::VHandle vh1 = smallerX ? (*nodeVHandles)[idx1] : (*cycleVHandles)[idx1];
+			MyMesh::VHandle vh2 = smallerY ? (*nodeVHandles)[idx2] : (*cycleVHandles)[idx2];
+			MyMesh::VHandle vh3 = smallerZ ? (*nodeVHandles)[idx3] : (*cycleVHandles)[idx3];
+			if (mesh->add_face(vh3, vh2, vh1).idx() == -1) {
+				if (mesh->add_face(vh1, vh2, vh3).idx() == -1) {
+					//fuck
+				}
+			}
+		}
+	}
+}
+
+void SQMAlgorithm::triangulateOneRings2() {
+	deque<SQMNode*> queue;
+	if (root != NULL) queue.push_back(root);
+
+	while (!queue.empty()) {
+		SQMNode *node = queue.front();
+		SQMNode *cycleNode = node->getCycleNode();
+		queue.pop_front();
+
+		if (node->getSQMNodeType() == SQMCycleLeaf && cycleNode != NULL) {
+			//project stuff
+			glm::vec3 normal = glm::normalize(cycleNode->getPosition_glm() - node->getPosition_glm());
+			glm::vec3 origin = (cycleNode->getPosition_glm() + node->getPosition_glm())* 0.5f;
+			node->projectOnPlaneRotateAndScale(mesh, origin, normal);
+			cycleNode->projectOnPlaneRotateAndScale(mesh, origin, normal);
+			//triangulate stuff
+			vector<glm::vec3> *nodePoints = node->getCyclePoints();
+			vector<glm::vec3> *cyclePoints = cycleNode->getCyclePoints();
+			vector<glm::vec3> points;
+			points.insert(points.end(), (*nodePoints).begin(), (*nodePoints).end());
+			points.insert(points.end(), (*cyclePoints).begin(), (*cyclePoints).end());
+			vector<glm::ivec3> triangles;
+			Triangulate(points, triangles);
+			//add triangles to mesh
+			addTrianglesToMesh(node, cycleNode, triangles, (*nodePoints).size());
+		}
+
+		for (int i = 0; i < node->getNodes()->size(); i++) {
+			queue.push_back((*node->getNodes())[i]);
+		}
+	}
+}
+
 #pragma endregion
 
 #pragma region SQM Algorithm
@@ -351,6 +470,12 @@ void SQMAlgorithm::straightenSkeleton() {
 	totalClocks = 0;
 	algorithmClocks = 0;
 
+	ts = clock();
+	root->breakCycles();
+	te = clock();
+	if (LOG_COMPUTATION_TIME)
+		(*os) << "\tCycles preprocess took " << te - ts << " clicks (" << (((float)(te - ts)) / CLOCKS_PER_SEC) << " seconds)\n";
+
 	if (root->getNodes()->size() == 0) {
 		//handle just root
 		if (mesh) delete mesh;
@@ -370,13 +495,14 @@ void SQMAlgorithm::straightenSkeleton() {
 		if (node == NULL) {
 			//handle worm
 			ts = clock();
-			root->createCapsules();
+			//root->breakCycles();
+			if (useCapsules) root->createCapsules();
 			fixWorm();
 			numOfNodes = countNodes();
 			refreshIDs();
 			te = clock();
 			if (LOG_COMPUTATION_TIME)
-				(*os) << "\tPreprocess took " << te - ts << " clicks (" << (((float)(te - ts)) / CLOCKS_PER_SEC) << " seconds)\n";
+				(*os) << "\tCapsule preprocess took " << te - ts << " clicks (" << (((float)(te - ts)) / CLOCKS_PER_SEC) << " seconds)\n";
 			totalClocks += (te - ts);
 			if (mesh) delete mesh;
 			mesh = new MyMesh();
@@ -400,18 +526,21 @@ void SQMAlgorithm::straightenSkeleton() {
 		}
 	}
 	if (root->getNodes()->size() >= 3) {
+		root->setIsCyclic(hasCycle);
 		ts = clock();
-		root->createCapsules();
+		//root->breakCycles();
+		if (useCapsules) root->createCapsules();
 		numOfNodes = countNodes();
 		refreshIDs();
 		te = clock();
 		if (LOG_COMPUTATION_TIME)
-			(*os) << "\tPreprocess took " << te - ts << " clicks (" << (((float)(te - ts)) / CLOCKS_PER_SEC) << " seconds)\n";
+			(*os) << "\tCapsule preprocess took " << te - ts << " clicks (" << (((float)(te - ts)) / CLOCKS_PER_SEC) << " seconds)\n";
 		totalClocks += te - ts;
 		//root->straightenSkeleton(OpenMesh::Vec3f(0, 0, 0));
 		skeletonR = root->exportToSkinSkeleton(NULL);
 		ts = clock();
-		root->straightenSkeleton(NULL);
+		//root->straightenSkeleton(NULL);
+		root->straightenSkl();
 		te = clock();
 		skeletonB = root->exportToSkinSkeleton(NULL);
 		(*os) << "\tIt took " << te - ts << " clicks (" << (((float)(te - ts)) / CLOCKS_PER_SEC) << " seconds)\n";
@@ -529,6 +658,14 @@ void SQMAlgorithm::finalVertexPlacement() {
 	clock_t ts, te;
 
 	ts = clock();
+	//rotateCycleOneRings();
+	//triangulateOneRings();
+	te = clock();
+	if (LOG_COMPUTATION_TIME)
+		(*os) << "\tCycle preprocessing took " << te - ts << " clicks (" << (((float)(te - ts)) / CLOCKS_PER_SEC) << " seconds)\n";
+	totalClocks += te - ts;
+
+	ts = clock();
 	calculateSkinSkeletonIDs();
 	root->setupSkinningMatrixIDs(skeleton);
 	te = clock();
@@ -536,12 +673,16 @@ void SQMAlgorithm::finalVertexPlacement() {
 		(*os) << "\tPreprocessing took " << te - ts << " clicks (" << (((float)(te - ts)) / CLOCKS_PER_SEC) << " seconds)\n";
 	totalClocks += te - ts;
 
-	ts = clock();
-	root->rotateWithSkeleton(mesh, skeleton);
-	te = clock();
-	if (LOG_COMPUTATION_TIME)
-		(*os) << "\tIt took " << te - ts << " clicks (" << (((float)(te - ts)) / CLOCKS_PER_SEC) << " seconds)\n";
-	algorithmClocks += te - ts;
+	if (useCPUSkinning) {
+		ts = clock();
+		root->rotateWithSkeleton(mesh, skeleton);
+		te = clock();
+		if (LOG_COMPUTATION_TIME)
+			(*os) << "\tIt took " << te - ts << " clicks (" << (((float)(te - ts)) / CLOCKS_PER_SEC) << " seconds)\n";
+		algorithmClocks += te - ts;
+		triangulateOneRings2();
+	}
+
 	sqmState = SQMFinalPlacement;
 
 	if (LOG_COMPUTATION_TIME) {

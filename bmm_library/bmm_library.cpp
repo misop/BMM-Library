@@ -3,7 +3,7 @@
 
 #pragma region Load From File
 
-void SQMLoadFromFileAndExportToFile(std::string input, std::string output, bool CPUSkinning) {
+void BMMLoadFromFileAndExportToFile(std::string input, std::string output, bool CPUSkinning) {
 	SQMBasicController *sqm = new SQMBasicController();
 	sqm->loadSkeletonFromFile(input);
 	sqm->executeSQMAlgorithm(CPUSkinning);
@@ -11,7 +11,7 @@ void SQMLoadFromFileAndExportToFile(std::string input, std::string output, bool 
 	delete sqm;
 }
 
-void SQMLoadFromFileAndExportToVectors(std::string input, std::vector<float> &points, std::vector<int> &indices, bool CPUSkinning) {
+void BMMLoadFromFileAndExportToVectors(std::string input, std::vector<float> &points, std::vector<int> &indices, bool CPUSkinning) {
 	SQMBasicController *sqm = new SQMBasicController();
 	sqm->loadSkeletonFromFile(input);
 	sqm->executeSQMAlgorithm(CPUSkinning);
@@ -23,7 +23,7 @@ void SQMLoadFromFileAndExportToVectors(std::string input, std::vector<float> &po
 
 #pragma region Load From Skeleton
 
-void SQMLoadFromSkeletonAndExportToFile(SQMSkeletonNode *skeleton, std::string output, bool CPUSkinning) {
+void BMMLoadFromSkeletonAndExportToFile(SQMSkeletonNode *skeleton, std::string output, bool CPUSkinning) {
 	SQMBasicController *sqm = new SQMBasicController();
 	sqm->loadSkeleton(skeleton);
 	sqm->executeSQMAlgorithm(CPUSkinning);
@@ -31,7 +31,7 @@ void SQMLoadFromSkeletonAndExportToFile(SQMSkeletonNode *skeleton, std::string o
 	delete sqm;
 }
 
-void SQMLoadFromSkeletonAndExportToVectors(SQMSkeletonNode *skeleton, std::vector<float> &points, std::vector<int> &indices, bool CPUSkinning) {
+void BMMLoadFromSkeletonAndExportToVectors(SQMSkeletonNode *skeleton, std::vector<float> &points, std::vector<int> &indices, bool CPUSkinning) {
 	SQMBasicController *sqm = new SQMBasicController();
 	sqm->loadSkeleton(skeleton);
 	sqm->executeSQMAlgorithm(CPUSkinning);

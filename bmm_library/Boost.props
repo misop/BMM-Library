@@ -3,10 +3,10 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
-    <IncludePath>C:\Users\mm\Documents\GitHub\BMM-Library\bmm_library\Libs\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)\Libs\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup>
-    <LibraryPath>C:\Users\mm\Documents\GitHub\BMM-Library\bmm_library\Libs\lib\debug;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)\Libs\lib\debug;$(LibraryPath)</LibraryPath>
     <_PropertySheetDisplayName>Libs_d</_PropertySheetDisplayName>
   </PropertyGroup>
   <ItemDefinitionGroup />

@@ -27,6 +27,9 @@ class SQMAlgorithm {
 	SkinSkeleton *skeleton;
 	clock_t totalClocks;
 	clock_t algorithmClocks;
+	bool useCapsules;
+	bool useCPUSkinning;
+	bool hasCycle;
 
 	SQMNode* findBNPInTree();
 	void swapRoot(SQMNode *node);
@@ -38,6 +41,9 @@ public:
 	void setRoot(SQMNode *newRoot);
 	void setNumberOfNodes(int newNumberOfNodes);
 	void setSmoothingAlgorithm(SQMSmoothingAlgorithm sqmSmoothingAlgorithm);
+	void setUseCapsules(bool newUseCapsules);
+	void setUseCPUSkinning(bool newUseCPUSkinning);
+	void setHasCycle(bool cyclic);
 
 	SQMNode* getRoot();
 	SQMState getState();
@@ -52,6 +58,10 @@ public:
 	int countNodes();
 	void refreshIDs();
 	void calculateSkinSkeletonIDs();
+	void rotateCycleOneRings();
+	void triangulateOneRings();
+	void triangulateOneRings2();
+	void addTrianglesToMesh(SQMNode* node, SQMNode* cycleNode, std::vector<glm::ivec3> &triangles, int split);
 
 	void getBoundingSphere(float &x, float &y, float &z, float &d);
 	void updateResetRoot();
