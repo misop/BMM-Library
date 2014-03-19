@@ -3,10 +3,11 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
-    <IncludePath>C:\Boost\include\boost-1_51;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\mm\Documents\GitHub\BMM-Library\bmm_library\Libs\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup>
-    <LibraryPath>C:\Boost\lib\i386;$(LibraryPath)</LibraryPath>
+    <LibraryPath>C:\Users\mm\Documents\GitHub\BMM-Library\bmm_library\Libs\lib\debug;$(LibraryPath)</LibraryPath>
+    <_PropertySheetDisplayName>Libs_d</_PropertySheetDisplayName>
   </PropertyGroup>
   <ItemDefinitionGroup />
   <ItemGroup />
